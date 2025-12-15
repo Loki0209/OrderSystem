@@ -1,153 +1,669 @@
 {
-  "info": {
-    "name": "Order Management API",
-    "description": "Complete API collection for testing Order Management System",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Health Check",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8080/api/v1/hello",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["api", "v1", "hello"]
-        }
-      }
-    },
-    {
-      "name": "Register User",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/v1/auth/register",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["api", "v1", "auth", "register"]
-        }
-      }
-    },
-    {
-      "name": "Login",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/v1/auth/login",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["api", "v1", "auth", "login"]
-        }
-      }
-    },
-    {
-      "name": "Get All Users",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer YOUR_TOKEN_HERE"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8080/api/v1/users",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["api", "v1", "users"]
-        }
-      }
-    },
-    {
-      "name": "Get User By ID",
-      "request": {
-        "method": "GET",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer YOUR_TOKEN_HERE"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8080/api/v1/users/USER_ID",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["api", "v1", "users", "USER_ID"]
-        }
-      }
-    },
-    {
-      "name": "Update User",
-      "request": {
-        "method": "PUT",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer YOUR_TOKEN_HERE"
-          },
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"John Doe Updated\"\n}"
-        },
-        "url": {
-          "raw": "http://localhost:8080/api/v1/users/USER_ID",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["api", "v1", "users", "USER_ID"]
-        }
-      }
-    },
-    {
-      "name": "Delete User",
-      "request": {
-        "method": "DELETE",
-        "header": [
-          {
-            "key": "Authorization",
-            "value": "Bearer YOUR_TOKEN_HERE"
-          }
-        ],
-        "url": {
-          "raw": "http://localhost:8080/api/v1/users/USER_ID",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "8080",
-          "path": ["api", "v1", "users", "USER_ID"]
-        }
-      }
-    }
-  ]
+	"info": {
+		"name": "Restaurant Ordering System API",
+		"description": "Complete API collection for Restaurant/Cafe Ordering System with Stores, Categories, Food Items, Users, and Products",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"version": "2.0.0"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "store_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "category_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "food_item_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/hello",
+					"host": ["{{base_url}}"],
+					"path": ["hello"]
+				},
+				"description": "Health check endpoint to verify API is running"
+			}
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User (Owner/Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('user_id', response.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Restaurant Owner\",\n  \"email\": \"owner@restaurant.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						},
+						"description": "Register a new user (restaurant owner/admin)"
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('auth_token', response.token);",
+									"    pm.collectionVariables.set('user_id', response.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"owner@restaurant.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login and get JWT token"
+					}
+				}
+			]
+		},
+		{
+			"name": "Stores",
+			"item": [
+				{
+					"name": "Create Store",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('store_id', response.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"The Gourmet Cafe\",\n  \"description\": \"A premium cafe serving delicious coffee and pastries\",\n  \"address\": {\n    \"street\": \"123 Main Street\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zip_code\": \"10001\",\n    \"country\": \"USA\"\n  },\n  \"phone\": \"+1-234-567-8900\",\n  \"email\": \"contact@gourmetcafe.com\",\n  \"opening_time\": \"08:00 AM\",\n  \"closing_time\": \"10:00 PM\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores",
+							"host": ["{{base_url}}"],
+							"path": ["stores"]
+						},
+						"description": "Create a new store (requires authentication)"
+					}
+				},
+				{
+					"name": "Get All Stores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores",
+							"host": ["{{base_url}}"],
+							"path": ["stores"]
+						},
+						"description": "Get all stores (public endpoint)"
+					}
+				},
+				{
+					"name": "Get Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stores/{{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["stores", "{{store_id}}"]
+						},
+						"description": "Get store details by ID (public endpoint for QR code scanning)"
+					}
+				},
+				{
+					"name": "Get My Stores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stores/my-stores",
+							"host": ["{{base_url}}"],
+							"path": ["stores", "my-stores"]
+						},
+						"description": "Get all stores owned by authenticated user"
+					}
+				},
+				{
+					"name": "Update Store",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"The Gourmet Cafe - Updated\",\n  \"description\": \"A premium cafe serving delicious coffee, pastries, and sandwiches\",\n  \"opening_time\": \"07:00 AM\",\n  \"closing_time\": \"11:00 PM\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/stores/{{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["stores", "{{store_id}}"]
+						},
+						"description": "Update store details"
+					}
+				},
+				{
+					"name": "Toggle Store Status (Open/Close)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stores/{{store_id}}/toggle-status",
+							"host": ["{{base_url}}"],
+							"path": ["stores", "{{store_id}}", "toggle-status"]
+						},
+						"description": "Toggle store open/closed status"
+					}
+				},
+				{
+					"name": "Delete Store",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/stores/{{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["stores", "{{store_id}}"]
+						},
+						"description": "Delete a store"
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Create Category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('category_id', response.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"store_id\": \"{{store_id}}\",\n  \"name\": \"Beverages\",\n  \"description\": \"Hot and cold beverages\",\n  \"image\": \"https://example.com/beverages.jpg\",\n  \"display_order\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": ["{{base_url}}"],
+							"path": ["categories"]
+						},
+						"description": "Create a new category (requires authentication)"
+					}
+				},
+				{
+					"name": "Get Categories by Store",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories/store/{{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["categories", "store", "{{store_id}}"]
+						},
+						"description": "Get all categories for a store (public endpoint)"
+					}
+				},
+				{
+					"name": "Get Active Categories by Store",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories/store/{{store_id}}/active",
+							"host": ["{{base_url}}"],
+							"path": ["categories", "store", "{{store_id}}", "active"]
+						},
+						"description": "Get only active categories for customers"
+					}
+				},
+				{
+					"name": "Get Category by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories/{{category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["categories", "{{category_id}}"]
+						},
+						"description": "Get category details by ID"
+					}
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Hot & Cold Beverages\",\n  \"description\": \"Premium hot and cold beverages\",\n  \"display_order\": 1,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/{{category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["categories", "{{category_id}}"]
+						},
+						"description": "Update category details"
+					}
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/categories/{{category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["categories", "{{category_id}}"]
+						},
+						"description": "Delete a category"
+					}
+				}
+			]
+		},
+		{
+			"name": "Food Items",
+			"item": [
+				{
+					"name": "Create Food Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('food_item_id', response.data.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"store_id\": \"{{store_id}}\",\n  \"category_id\": \"{{category_id}}\",\n  \"name\": \"Cappuccino\",\n  \"description\": \"Rich espresso with steamed milk and foam\",\n  \"price\": 4.99,\n  \"image\": \"https://example.com/cappuccino.jpg\",\n  \"is_veg\": true,\n  \"prep_time\": 5,\n  \"display_order\": 1,\n  \"tags\": [\"bestseller\", \"hot\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/food-items",
+							"host": ["{{base_url}}"],
+							"path": ["food-items"]
+						},
+						"description": "Create a new food item (requires authentication)"
+					}
+				},
+				{
+					"name": "Get Food Items by Store",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/food-items/store/{{store_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "store", "{{store_id}}"]
+						},
+						"description": "Get all food items for a store"
+					}
+				},
+				{
+					"name": "Get Available Food Items by Store",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/food-items/store/{{store_id}}/available",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "store", "{{store_id}}", "available"]
+						},
+						"description": "Get only available food items for customers (public)"
+					}
+				},
+				{
+					"name": "Get Food Items by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/food-items/category/{{category_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "category", "{{category_id}}"]
+						},
+						"description": "Get all food items in a category"
+					}
+				},
+				{
+					"name": "Get Available Food Items by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/food-items/category/{{category_id}}/available",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "category", "{{category_id}}", "available"]
+						},
+						"description": "Get only available food items in a category (public)"
+					}
+				},
+				{
+					"name": "Get Food Item by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/food-items/{{food_item_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "{{food_item_id}}"]
+						},
+						"description": "Get food item details by ID"
+					}
+				},
+				{
+					"name": "Update Food Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Premium Cappuccino\",\n  \"description\": \"Rich espresso with steamed milk, foam, and chocolate sprinkles\",\n  \"price\": 5.49,\n  \"is_available\": true,\n  \"prep_time\": 6,\n  \"tags\": [\"bestseller\", \"hot\", \"premium\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/food-items/{{food_item_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "{{food_item_id}}"]
+						},
+						"description": "Update food item details"
+					}
+				},
+				{
+					"name": "Toggle Food Item Availability",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/food-items/{{food_item_id}}/toggle-availability",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "{{food_item_id}}", "toggle-availability"]
+						},
+						"description": "Toggle food item availability (available/unavailable)"
+					}
+				},
+				{
+					"name": "Delete Food Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/food-items/{{food_item_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["food-items", "{{food_item_id}}"]
+						},
+						"description": "Delete a food item"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": ["{{base_url}}"],
+							"path": ["users"]
+						},
+						"description": "Get all users (requires authentication)"
+					}
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}"]
+						},
+						"description": "Get user details by ID"
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Restaurant Owner - Updated\",\n  \"role\": \"admin\",\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}"]
+						},
+						"description": "Update user details"
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/users/{{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{user_id}}"]
+						},
+						"description": "Delete a user"
+					}
+				}
+			]
+		}
+	]
 }

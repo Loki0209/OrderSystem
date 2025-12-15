@@ -8,6 +8,7 @@ import (
 
 	"ordernew/config"
 	"ordernew/routes"
+	"ordernew/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,6 +26,11 @@ func main() {
 		log.Fatal("Failed to connect to database:", err)
 	}
 	defer config.DisconnectDatabase()
+
+	// Initialize collections
+	services.InitStoreCollection()
+	services.InitCategoryCollection()
+	services.InitFoodItemCollection()
 
 	// Initialize Gin router
 	router := gin.Default()
