@@ -9,9 +9,10 @@ import (
 // User represents a user in the system
 type User struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name      string             `json:"name" bson:"name" binding:"required"`
-	Email     string             `json:"email" bson:"email" binding:"required,email"`
-	Password  string             `json:"password,omitempty" bson:"password" binding:"required,min=6"`
+	Name      string             `json:"name" bson:"name"`
+	Email     string             `json:"email" bson:"email" binding:"omitempty,email"`
+	Phone     string             `json:"phone" bson:"phone"`
+	Password  string             `json:"password,omitempty" bson:"password"`
 	Role      string             `json:"role" bson:"role"`
 	IsActive  bool               `json:"is_active" bson:"is_active"`
 	CreatedAt time.Time          `json:"created_at" bson:"created_at"`
@@ -23,6 +24,7 @@ type UserResponse struct {
 	ID        primitive.ObjectID `json:"id"`
 	Name      string             `json:"name"`
 	Email     string             `json:"email"`
+	Phone     string             `json:"phone"`
 	Role      string             `json:"role"`
 	IsActive  bool               `json:"is_active"`
 	CreatedAt time.Time          `json:"created_at"`
@@ -56,6 +58,7 @@ func (u *User) ToUserResponse() UserResponse {
 		ID:        u.ID,
 		Name:      u.Name,
 		Email:     u.Email,
+		Phone:     u.Phone,
 		Role:      u.Role,
 		IsActive:  u.IsActive,
 		CreatedAt: u.CreatedAt,
