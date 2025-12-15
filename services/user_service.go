@@ -14,6 +14,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var userCollection *mongo.Collection
+
+func init() {
+	// This will be set after database connection
+	// userCollection will be initialized in InitUserCollection
+}
+
+// InitUserCollection initializes the user collection
+func InitUserCollection() {
+	userCollection = config.GetCollection("users")
+}
+
 type UserService struct {
 	collection *mongo.Collection
 }
@@ -21,7 +33,7 @@ type UserService struct {
 // NewUserService creates a new user service instance
 func NewUserService() *UserService {
 	return &UserService{
-		collection: config.GetCollection("users"),
+		collection: userCollection,
 	}
 }
 

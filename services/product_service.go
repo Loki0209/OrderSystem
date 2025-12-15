@@ -14,6 +14,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var productCollection *mongo.Collection
+
+func init() {
+	// This will be set after database connection
+	// productCollection will be initialized in InitProductCollection
+}
+
+// InitProductCollection initializes the product collection
+func InitProductCollection() {
+	productCollection = config.GetCollection("products")
+}
+
 type ProductService struct {
 	collection *mongo.Collection
 }
@@ -21,7 +33,7 @@ type ProductService struct {
 // NewProductService creates a new product service instance
 func NewProductService() *ProductService {
 	return &ProductService{
-		collection: config.GetCollection("products"),
+		collection: productCollection,
 	}
 }
 

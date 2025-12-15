@@ -28,6 +28,8 @@ func main() {
 	defer config.DisconnectDatabase()
 
 	// Initialize collections
+	services.InitUserCollection()
+	services.InitProductCollection()
 	services.InitStoreCollection()
 	services.InitCategoryCollection()
 	services.InitFoodItemCollection()
